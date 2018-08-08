@@ -7,7 +7,7 @@ const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticac
 
 const app = express();
 
-//Obtiene los usuarios de la BD
+//Muestra los usuarios de la BD
 app.get('/usuario', verificaToken, (req, res) => {
 
     let desde = req.query.desde || 0;
@@ -34,10 +34,10 @@ app.get('/usuario', verificaToken, (req, res) => {
                     ok: true,
                     usuarios,
                     cuantos: conteo
-                })
+                });
             });
 
-        })
+        });
 
 });
 
@@ -64,7 +64,7 @@ app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
         res.json({
             ok: true,
             usuario: usuarioDB
-        })
+        });
     });
 
 });
@@ -81,6 +81,15 @@ app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
             return res.status(400).json({
                 ok: false,
                 err
+            });
+        }
+
+        if (!usuarioDB) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'El usuario no existe'
+                }
             });
         }
 
@@ -103,7 +112,7 @@ app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     //Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
     Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err
             });
