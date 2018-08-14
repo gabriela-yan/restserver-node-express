@@ -7,7 +7,10 @@ const jwt = require('jsonwebtoken');
 
 let verificaToken = (req, res, next) => {
     //Obtengo el header
-    let token = req.get('token');
+    //let token = req.get('token');
+    //Aquí se esta verificando si la variable token viene vía url o por cabecera
+    let token = req.query.token ? req.query.token : req.get('token');
+
     //Recibe el token, el SEED que se creo y un callback que recibe un error o un decoded
     jwt.verify(token, process.env.SEED, (err, decoded) => {
         if (err) {
